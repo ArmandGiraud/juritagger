@@ -9,14 +9,13 @@ To install juritagger, run this command in your terminal:
 
     $ pip install juritagger
 ```
-
+Download the [spaCy model](https://spacy.io/models/fr#fr_core_news_md)
+<br/>
+```batch
+python -m spacy download fr_core_news_md
+```
 This is the preferred method to install juritagger, as it will always
 install the most recent stable release.
-
-If you don't have [pip](https://pip.pypa.io) installed, this 
-[Python installation guide](http://docs.python-guide.org/en/latest/starting/installation/) 
-can guide you through the process.
-
 
 ## From sources
 

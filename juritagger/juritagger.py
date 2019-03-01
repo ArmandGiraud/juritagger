@@ -63,6 +63,7 @@ class JuriMatcher:
             self.classif_matcher.add(label, self._add_event_ent, *pattern)
 
     def tag_doc(self, doc,  mode="flat"):
+        "tag documents in one of ['flat', 'class']"
         doc = self.nlp(doc)
         if mode == "flat":
             matches = self.flat_matcher(doc)

@@ -62,6 +62,7 @@ def render_html():
 
 
 def check_overlap(i, entity_range):
+    "check if a given match overlaps another match"
     v = []
     entity = entity_range[i]
     for j, a in enumerate(entity_range):
@@ -70,6 +71,7 @@ def check_overlap(i, entity_range):
     return v
 
 def keep_longer_match(matches):
+    "takes matches as input and output matches without any overlap based on longest entity"
     entity_range = []
     for _, start, end in matches:
         entity_range.append(set(range(start, end)))
