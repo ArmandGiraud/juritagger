@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
 """main script for juriscrapper: load dict and setup matching class"""
-
-import spacy
 import json
 import logging
-from spacy.matcher import Matcher
 from collections import defaultdict
+
+import spacy
+from spacy.matcher import Matcher
 
 FORMAT = '%(asctime)-15s %(clientip)s %(user)-8s %(message)s'
 logging.basicConfig(format=FORMAT)
 
 class JuriMatcher:
+    "main class to match specific words in text using spaCy matcher"
     def __init__(self, dico_files, spacy_model):
         self.flat_dico, self.classified_dico = dico_files
         self.spacy_model = spacy_model
@@ -21,32 +22,34 @@ class JuriMatcher:
         self._load_dicts()
         self._build_flat_matcher()
         self._build_class_matcher()
-        
+
     def _load_spacy_model(self):
         logging.info("Loading spacy model {}".format(self.spacy_model))
         self.nlp = spacy.load(self.spacy_model)
-    
+
     def _load_dicts(self):
+        """load flat dict and classified dicts"""
         with open(self.flat_dico, "r") as f:
             self.flat = f.read().splitlines()
         with open(self.classified_dico, "r") as f:
             self.classif = json.load(f)
-    
-    def _add_event_ent(self, matcher, doc, i, matches):
-            # Get the current match and create tuple of entity label, start and end.
-            # Append entity to the doc's entity. (Don't overwrite doc.ents!)
-            match_id, start, end = matches[i]
-            entity = (match_id, start, end)
-            doc.ents += (entity,)
 
-            
+    def _add_event_ent(self, matcher, doc, i, matches):
+        # Get the current match and create tuple of entity label, start and end.
+        # Append entity to the doc's entity. (Don't overwrite doc.ents!)
+        match_id, start, end = matches[i]
+        entity = (match_id, start, end)
+        doc.ents += (entity,)
+
     def _build_flat_matcher(self):
+        "add patterns to matcher"
         logging.info("building flat matcher")
         self.flat_matcher = Matcher(self.nlp.vocab)
-        pat = [[{"LOWER": u} for u in p.split()] for p in self.flat_dico]
+        pat = [[{"LOWER": u} for u in p.split()] for p in self.flat]
         self.flat_matcher.add('JUR', self._add_event_ent, *pat)
-    
+
     def _build_class_matcher(self):
+        """add patterns to matcher, but add entity type according to dict keys"""
         logging.info("building class matcher")
         self.classif_matcher = Matcher(self.nlp.vocab)
         res = defaultdict(list)
@@ -58,11 +61,12 @@ class JuriMatcher:
         self.entity_types = res.keys()
         for label, pattern in res.items():
             self.classif_matcher.add(label, self._add_event_ent, *pattern)
-            
-    def tag_doc(self, doc,  mode = "flat"):
+
+    def tag_doc(self, doc,  mode="flat"):
         doc = self.nlp(doc)
         if mode == "flat":
             matches = self.flat_matcher(doc)
+            self.entity_types = ["JUR"]
         elif mode == "class":
             matches = self.classif_matcher(doc)
         
@@ -97,7 +101,7 @@ if __name__ == "__main__":
     usages contraires).\nLe salarié peut également demander à bénéficier d'un congé sans solde ou d'une indemnité d'activité partielle,
     en cas d'intempérie à caractère exceptionnel notamment."""
 
-    matches, doc = jm.tag_doc(fiche_text, mode = "class")
+    matches, doc = jm.tag_doc(fiche_text, mode="flat")
     
     from display_entities import serve_ents, keep_longer_match
     matches = keep_longer_match(matches) # remove overlapping matches
@@ -109,4 +113,4 @@ if __name__ == "__main__":
         "colors" : {entity:COLOR_LIST[i] for i, entity in enumerate(jm.entity_types)}
     }
 
-    serve_ents(doc, matches, options = options)
+    serve_ents(doc, matches, options=options)
