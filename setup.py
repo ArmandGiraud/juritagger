@@ -49,6 +49,7 @@ setup(
             'juritagger=juritagger.cli:main',
         ],
     },
+    package_data={'juritagger': ['juritagger/dicos/*']},
     install_requires=requirements,
     license="MIT license",
     long_description=__doc__,
