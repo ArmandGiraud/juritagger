@@ -5,8 +5,6 @@
 [![Travis job](https://img.shields.io/travis/ArmandGiraud/juritagger.svg)](https://travis-ci.org/ArmandGiraud/juritagger)
 
 
-
-
 tag a text string with droit du travail entities
 
 ## Table of Content:
@@ -33,14 +31,12 @@ If you don't have [pip](https://pip.pypa.io) installed, this
 can guide you through the process.
 
 ## Usage
-## simple usage
+### simple usage
 ```python
 from juritagger import JuriMatcher
 
-opts = {"dico_files":
-        ["./dicos/merged.txt", "./dicos/cluster_merged_classif.json"],
+opts = {
         "spacy_model" : "fr_core_news_md"
-        
         }
 jm = JuriMatcher(**opts)
 
@@ -59,15 +55,13 @@ matches
 ```
 ![](./images/flat.png)
 
-## classified terms
+### classified terms
 
 ```python
 from juritagger import JuriMatcher
 
-opts = {"dico_files":
-        ["./dicos/merged.txt", "./dicos/cluster_merged_classif.json"],
+opts = {
         "spacy_model" : "fr_core_news_md"
-        
         }
 jm = JuriMatcher(**opts)
 
@@ -86,6 +80,25 @@ matches
 >>> ('PERS', 26, 27)]
 ```
 ![](./images/class.png)
+
+
+### visualize entities
+
+```python
+from juritagger.display_entities import serve_ents, keep_longer_match, COLOR_LIST
+
+matches = keep_longer_match(matches) # remove overlapping matches
+
+from display_entities import COLOR_LIST
+
+options = {
+    "ents": list(jm.entity_types),
+    "colors" : {entity:COLOR_LIST[i] for i, entity in enumerate(jm.entity_types)}
+}
+
+serve_ents(doc, matches, options=options)
+```
+then go to ```http://localhost:5000/```
 
 ## TODO
 

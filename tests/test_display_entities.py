@@ -10,7 +10,6 @@ from click.testing import CliRunner
 from juritagger import display_entities
 from juritagger import cli
 
-
 class TestDisplay(unittest.TestCase):
     """Tests for `juritagger` package."""
     def test_convert_match(self):
@@ -46,6 +45,6 @@ class TestDisplay(unittest.TestCase):
                         ('JUR', 33, 36)]
         new_matches = display_entities.keep_longer_match(matches)
         self.assertEqual(new_matches, expected_res)
-        
+
 if __name__ == "__main__":
     unittest.main()

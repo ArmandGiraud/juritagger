@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """main script for juriscrapper: load dict and setup matching class"""
+import os
 import json
 import logging
 from collections import defaultdict
@@ -13,7 +14,7 @@ logging.basicConfig(format=FORMAT)
 
 class JuriMatcher:
     "main class to match specific words in text using spaCy matcher"
-    def __init__(self, dico_files, spacy_model):
+    def __init__(self, spacy_model, dico_files = [None, None]):
         self.flat_dico, self.classified_dico = dico_files
         self.spacy_model = spacy_model
 
@@ -29,10 +30,22 @@ class JuriMatcher:
 
     def _load_dicts(self):
         """load flat dict and classified dicts"""
-        with open(self.flat_dico, "r") as f:
-            self.flat = f.read().splitlines()
-        with open(self.classified_dico, "r") as f:
-            self.classif = json.load(f)
+        package_path = os.path.dirname(os.path.abspath(__file__))
+        if not self.flat_dico:
+            f = os.path.join(package_path, "dicos/merged.txt")
+            with open(f, "r") as f:
+                self.flat = f.read().splitlines()
+        else:
+            with open(self.flat_dico, "r") as f:
+                self.flat = f.read().splitlines()
+                
+        if not self.classified_dico:
+            f = os.path.join(package_path, "dicos/cluster_merged_classif.json")
+            with open(f, "r") as f:
+                self.classif = json.load(f)
+        else:
+            with open(self.classified_dico,  "r") as f:
+                self.classif = json.load(f)
 
     def _add_event_ent(self, matcher, doc, i, matches):
         # Get the current match and create tuple of entity label, start and end.
