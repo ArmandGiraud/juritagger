@@ -22,7 +22,7 @@ Links:
 
 from setuptools import setup, find_packages
 
-requirements = ['Click>=6.0', "spacy>=2.0.5"]
+requirements = ['Click>=6.0', "spacy==2.0.13"]
 
 setup_requirements = [ ]
 

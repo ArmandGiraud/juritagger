@@ -61,14 +61,14 @@ matches
 from juritagger import JuriMatcher
 
 opts = {
-        "spacy_model" : "fr_core_news_md"
+        "spacy_model" : "fr_core_news_sm"
         }
 jm = JuriMatcher(**opts)
 
 text = """L'indemnisation du salarié dépend du nombre de jours de fermeture
 de l'entreprise et du nombre de jours de congés JUR acquis par le salarié."""
 
-matches, doc = jm.tag_doc(fiche_text, mode = "class")
+matches, doc = jm.tag_doc(text, mode = "class")
 matches
 
 >>>[('CHOMAGE', 1, 2),

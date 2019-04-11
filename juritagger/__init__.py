@@ -5,3 +5,5 @@
 __author__ = """Armand Giraud"""
 __email__ = 'armand.giraud.ag@gmail.com'
 __version__ = '0.1.0'
+
+from .juritagger import JuriMatcher
